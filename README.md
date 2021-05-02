@@ -33,3 +33,8 @@ In the default we included screenshots from our App femtelligent:
 </p>
 # TODO 
 -add background generator
+
+# Used images
+used images from
+-<https://de.wikipedia.org/wiki/Datei:Pixel_3_schematic.svg>
+-<https://creativecommons.org/licenses/by-sa/4.0/deed.de>
