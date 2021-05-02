@@ -17,16 +17,16 @@ pip3 install Pillow
 ```
 ## Included backgrounds
 ### Simple background
-![Simple background](iphone_6_5_background.png)
+<img src="iphone_6_5_background.png" width="200"/>
 ### Double background
 Background for two pictures.
-![Double background](iphone_6_5_double_background.png)
-
-## Included Cases
-![Border](iphone_5_5_border.png)
+<img src="iphone_6_5_double_background.png" width="200"/>
 
 # Example
 In the default we included screenshots from our App femtelligent:
 -<https://play.google.com/store/apps/details?id=info.foreverycast.perionatural>
 ## Final result
-![Result picture](en/iphone_6_5/1_left_result.png)
+<img src="en/iphone_6_5/1_left_result.png" width="200"/>
+
+# TODO 
+-add background generator
