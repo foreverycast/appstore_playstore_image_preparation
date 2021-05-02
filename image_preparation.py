@@ -2,7 +2,6 @@ from PIL import Image, ImageDraw, ImageFont
 import textwrap
 import csv
 
-
 print("1: android")
 print("2: iphone 6x5")
 print("3: iphone 5x5")
@@ -10,21 +9,25 @@ print("Enter device number:")
 option_list = ['android', 'android', 'iphone_6_5', 'iphone_5_5']
 option = 0
 try:
-    option = int(input())
+    option = option_list[int(input())]
 except ValueError:
     print("Incorect value. Please choose a number")
     exit()
 
 DEVICE = option
-DEVICE = "iphone_6_5"
 
 devices = {
   "android": {
     "size": (1080, 1920),
-    "position": 642,  # (234, 642),
-    "position_double_one": (50, 656),
+    "position": 642,
+    "position_double_one": (50, 706),
     "position_double_two": (1790, 656),
-    "border": False,
+    "border": True,
+    "border_position": 465,
+    "border_double_one": (-20, 529),
+    "border_double_two": (1740, 479),
+    "double_picture": True,
+    "double_pic_font_color": (254,253,255),  # (32,32,32),
   },
   "iphone_6_5": {
       "size": (1242, 2688),
@@ -35,6 +38,8 @@ devices = {
       "border_position": 425,
       "border_double_one": (-196, 606),
       "border_double_two": (1646, 606),
+      "double_picture": True,
+      "double_pic_font_color": (254,253,255),
   },
   "iphone_5_5": {
       "size": (1242, 2208),
@@ -45,6 +50,8 @@ devices = {
       "border_position": 425,
       "border_double_one": (-196, 606),
       "border_double_two": (2044, 606),
+      "double_picture": True,
+      "double_pic_font_color": (254,253,255),
   },
   "ipad": (2048, 2732),
 }
@@ -62,13 +69,27 @@ def remove_corners(image_input, rad=200):
     image_input.putalpha(alpha)
     return image_input
 
+
+def paste_text(image_input, message, fnt, W, fill=(254,253,255)):
+    """ Paste text in the image """
+    # dl = ImageDraw.Draw(merged_img)
+    dl = ImageDraw.Draw(image_input)
+    w, h = dl.textsize(message, font=fnt)
+    message = textwrap.wrap(message, width=15)
+
+    y_position, padding = 10, 10
+    for line in message:
+        w, h = dl.textsize(line, font=fnt)
+        dl.text(((W-w)/2, y_position), line, font=fnt, fill=fill)
+        y_position += h + padding
+
 def straight_img(msg :str, language :str, pic_number, lang :str):
     """ Combine two images to one """
     background_img = Image.open('{0}_background.png'.format(DEVICE))
     forground_img = Image.open(
         '{0}/{1}/{2}.png'.format(language, DEVICE, pic_number)
     )
-    
+    print('{0}/{1}/{2}.png'.format(language, DEVICE, pic_number))
     font_path = 'font/IBMPlexSans-Bold.ttf'
     if lang == 'zh':
         font_path = 'font/ZhiMangXing-Regular.ttf'
@@ -92,19 +113,11 @@ def straight_img(msg :str, language :str, pic_number, lang :str):
         # Place border
         border_img = Image.open("{0}_border.png".format(DEVICE))
         start_x_pic = int((W - border_img.size[0]) / 2)
-        merged_img.paste(border_img, (start_x_pic, 425), border_img)
+        merged_img.paste(border_img, (start_x_pic, devices[DEVICE]['border_position']), border_img)
 
-    dl = ImageDraw.Draw(merged_img)
-    w, h = dl.textsize(msg, font=fnt)
-    message = textwrap.wrap(msg, width=15)
+    paste_text(merged_img, msg, fnt, W)
 
-    y_position, padding = 10, 10
-    for line in message:
-        w, h = dl.textsize(line, font=fnt)
-        dl.text(((W-w)/2, y_position), line, font=fnt)
-        y_position += h + padding
-
-    merged_img = Image.alpha_composite(background_img, merged_img)
+    merged_img = Image.alpha_composite(background_img.convert("RGBA"), merged_img.convert("RGBA"))
     merged_img = merged_img.resize(devices[DEVICE]['size'])
     merged_img.save('{0}/{1}/{2}_result.png'.format(language, DEVICE, pic_number))
 
@@ -129,27 +142,7 @@ def double_image(msg :str, second_msg :str, language :str, pic_number, pic_numbe
     if lang == 'ja':
         font_path = 'font/NotoSansJP-Black.otf'
 
-    fnt = ImageFont.truetype(font_path, 150)
-
-    print(forground_img.size[0], forground_img.size)
-    dl = ImageDraw.Draw(background_img)
-    w, h = dl.textsize(msg, font=fnt)
-    W = background_img.size[0] / 2
-    print(forground_img.size[0], w, h)
- 
-    y_position, padding = 10, 10
-    message = textwrap.wrap(msg, width=15)
-    for line in message:
-        w, h = dl.textsize(line, font=fnt)
-        dl.text(((W-w)/2, y_position), line, font=fnt)
-        y_position += h + padding
-    
-    y_position, padding = 10, 10
-    message_2 = textwrap.wrap(second_msg, width=15)
-    for line in message_2:
-        w, h = dl.textsize(line, font=fnt)
-        dl.text(((W-w)/2 + W, y_position), line, font=fnt)
-        y_position += h + padding
+    fnt = ImageFont.truetype(font_path, 140)
 
     rotate_img = forground_img.copy()
     rotate_img = rotate_img.rotate(-12, expand=True)
@@ -173,12 +166,15 @@ def double_image(msg :str, second_msg :str, language :str, pic_number, pic_numbe
 
     W, H = background_img.size
 
+
     left = 0
     upper = 0
     right = W / 2
     lower = H
-    left_merged = Image.alpha_composite(background_img, merged_img)
+    left_merged = Image.alpha_composite(background_img.convert("RGBA"), merged_img.convert("RGBA"))
     left_merged = left_merged.crop((left, upper, right, lower))
+
+    paste_text(left_merged, msg, fnt, left_merged.size[0], fill=devices[DEVICE]['double_pic_font_color'])
     left_merged = left_merged.resize(devices[DEVICE]['size'])
     
     left_merged.save('{0}/{1}/{2}_left_result.png'.format(lang, DEVICE, pic_number))
@@ -187,15 +183,17 @@ def double_image(msg :str, second_msg :str, language :str, pic_number, pic_numbe
     upper = 0
     right = W
     lower = H
-    right_merged = Image.alpha_composite(background_img, merged_img)
+    right_merged = Image.alpha_composite(background_img.convert("RGBA"), merged_img.convert("RGBA"))
     right_merged = right_merged.crop((left, upper, right, lower))
     right_merged = right_merged.resize(devices[DEVICE]['size'])
+    
+    paste_text(right_merged, second_msg, fnt, right_merged.size[0], fill=devices[DEVICE]['double_pic_font_color'])
     right_merged.save('{0}/{1}/{2}_right_result.png'.format(lang, DEVICE, pic_number_second))
 
 langauge_list = []
 double_pic_message = []
 double_pic_id = 1
-is_double_pic = True
+is_double_pic = devices[DEVICE]["double_picture"]
 with open('settings.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=';')
     for i, row in enumerate(csv_reader):
