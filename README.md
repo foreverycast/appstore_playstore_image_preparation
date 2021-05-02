@@ -37,4 +37,5 @@ In the default we included screenshots from our App femtelligent:
 # Used images
 used images from
 -<https://de.wikipedia.org/wiki/Datei:Pixel_3_schematic.svg>
+-<https://de.wikipedia.org/wiki/IPhone_12_Pro#/media/Datei:IPhone_12_Pro_Gold.svg>
 -<https://creativecommons.org/licenses/by-sa/4.0/deed.de>
