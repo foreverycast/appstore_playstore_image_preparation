@@ -7,6 +7,7 @@ python3 image_preparation.py
 
 # Settings
 Before you start, please download or change the location for your favorite font, for example google fonts.
+-<https://fonts.google.com/>
 ```python
 font_path = 'font/IBMPlexSans-Bold.ttf'
 ```
