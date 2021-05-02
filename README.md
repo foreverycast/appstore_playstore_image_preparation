@@ -26,7 +26,10 @@ Background for two pictures.
 In the default we included screenshots from our App femtelligent:
 -<https://play.google.com/store/apps/details?id=info.foreverycast.perionatural>
 ## Final result
-<img src="en/iphone_6_5/1_left_result.png" width="200"/>
-
+<p float="left">
+  <img src="en/iphone_6_5/1_left_result.png" width="200"/>
+  <img src="en/iphone_6_5/2_right_result.png" width="200"/>
+  <img src="en/iphone_6_5/3_result.png" width="200"/>
+</p>
 # TODO 
 -add background generator
